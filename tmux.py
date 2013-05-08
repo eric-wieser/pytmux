@@ -1,30 +1,30 @@
 import subprocess
 
 class Tmux(object):
-	def __init__(self, socket = None, use256Colors = True):
+	def __init__(self, socket=None, use_256_colors=True):
 		self.socket = socket
-		self.use256Colors = use256Colors
+		self.use_256_colors = use_256_colors
 
 	@property
-	def baseCommand(self):
+	def base_command(self):
 		command = ['tmux']
 		if self.socket is not None:
 			command += ['-S', self.socket]
-		if self.use256Colors is not None:
+		if self.use_256_colors:
 			command += ['-2']
 
 		return command
 
 	def execute(self, cmd):
-		print self.baseCommand + cmd
-		subprocess.call(self.baseCommand + cmd)
+		subprocess.call(self.base_command + cmd)
 		return self
 
-	def _startSession(self, session, window, command):
+	def _start_session(self, session, window, command):
 		self.execute(['new-session', '-ds', session.name, '-n', window.name, command])
 
-	def session(self, name, attach = False, command = None):
+	def session(self, name):
 		return Session(self, name)
+
 
 class Session(object):
 	def __init__(self, tmux, name):
@@ -35,9 +35,9 @@ class Session(object):
 	def window(self, name):
 		return Window(self, name)
 
-	def _startWindow(self, window, command):
+	def _start_window(self, window, command):
 		if not self.running:
-			self.tmux._startSession(self, window, command)
+			self.tmux._start_session(self, window, command)
 			self.running = True
 		else:
 			self.tmux.execute(['new-window', '-dt', self.name, '-n', window.name, command])
@@ -62,7 +62,7 @@ class Window(object):
 
 	def run(self, program):
 		if not self.running:
-			self.session._startWindow(self, program)
+			self.session._start_window(self, program)
 			self.running = True
 		return self
 
@@ -71,12 +71,12 @@ class Window(object):
 		self.session._execute(self, cmd, *args)
 		return self
 
-	def sendKeys(self, keys):
+	def send_keys(self, keys):
 		self.execute('send-keys', keys)
 		return self
 
-	def sendLine(self, keys):
-		self.sendKeys(keys).sendKeys("Enter")
+	def send_line(self, keys):
+		self.send_keys(keys).send_keys("Enter")
 		return self
 
 	def focus(self):
