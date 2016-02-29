@@ -40,7 +40,7 @@ class Session(object):
 			self.tmux._start_session(self, window, command)
 			self.running = True
 		else:
-			self.tmux.execute(['new-window', '-dt', self.name, '-n', window.name, command])
+			self.tmux.execute(['new-window', '-a', '-dt', self.name, '-n', window.name, command])
 
 	def _execute(self, window, cmd, *args):
 		self.tmux.execute([cmd] + ['-t', '%s:%s' % (self.name, window.name)] + list(args))
