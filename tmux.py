@@ -66,6 +66,13 @@ class Window(object):
 			self.running = True
 		return self
 
+	def run_shell(self, cmds):
+		return (self
+			.run(program='')
+			.send_keys(''.join(
+				'{}\n'.format(cmd) for cmd in cmds
+			))
+		)
 
 	def execute(self, cmd, *args):
 		self.session._execute(self, cmd, *args)
