@@ -79,18 +79,14 @@ class Window(object):
 		return self
 
 	def send_keys(self, keys):
-		self.execute('send-keys', keys)
-		return self
+		return self.execute('send-keys', keys)
 
 	def send_line(self, keys):
-		self.send_keys(keys).send_keys("Enter")
-		return self
+		return self.send_keys(keys).send_keys("Enter")
 
 	def focus(self):
-		self.execute('select-window')
-		return self
+		return self.execute('select-window')
 
 	def close(self):
-		self.execute('kill-window')
-		return self
+		return self.execute('kill-window')
 
